@@ -84,7 +84,7 @@ Routes.route('/delete/:id').post(function(req, res) {
 });
 
 
-app.use('/login', Routes);
+app.use('/api', Routes);
 
 app.listen(process.env.PORT || PORT, function() {
     console.log(`Server is running on Port:  ${process.env.PORT || PORT}`);
