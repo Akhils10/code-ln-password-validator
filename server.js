@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://codeLn_test:test123456@ds
 const connection = mongoose.connection;
 
 connection.once('open', function() {
-    console.log("MongoDB database connection established successfully");
+    console.log("MongoDB database connection was established successfully");
 })
 
 Routes.route('/').get(function(req, res) {
@@ -32,9 +32,19 @@ Routes.route('/').get(function(req, res) {
         }
     });
 });
+Routes.route('/auth').post(function(req, res) {
+    User.find(req.body, function(err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(data);
+            console.log(data);
+        }
+    });
+});
 Routes.route('/:id').get(function(req, res) {
     let id = req.params.id;
-    Todo.findById(id, function(err, data) {
+    User.findById(id, function(err, data) {
         res.json(data);
     });
 });
@@ -48,6 +58,29 @@ Routes.route('/insert').post(function(req, res) {
         .catch(err => {
             res.status(400).send('adding new data failed');
         });
+});
+
+Routes.route('/update/:id').post(function(req, res) {  
+        var myquery = { email : req.params.id  };
+        var newvalues = { $set: req.body };
+        User.updateOne(myquery, newvalues, function(err, data){
+            if (err) throw err;
+            res.json("Data updated");
+        })     
+        .catch(err => {
+            res.status(400).send("Update not possible");
+    });
+});
+
+Routes.route('/delete/:id').post(function(req, res) {  
+    var myquery = { email : req.params.id  };
+    User.deleteMany(myquery, function(err, data){
+        if (err) throw err;
+        res.json("Data deleted");
+    })     
+    .catch(err => {
+        res.status(400).send("Update not possible");
+});
 });
 
 

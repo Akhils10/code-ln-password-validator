@@ -1,14 +1,21 @@
 const nodemailer = require('nodemailer');
-const mailgun = require('nodemailer-mailgun-transport');
+//const mailgun = require('nodemailer-mailgun-transport');
 
 export default function EmailSender(receiver, subject, msg){
-  const auth = {
+  // const auth = {
+  //   auth: {
+  //     api_key: '52b0ea77-c4130739',
+  //     domain: 'sandbox2336efb54c7c4886bf18e9e4044c5733.mailgun.org'
+  //   }
+  // }
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
     auth: {
-      api_key: '52b0ea77-c4130739',
-      domain: 'sandbox2336efb54c7c4886bf18e9e4044c5733.mailgun.org'
+      user: 'webergeek2000@gmail.com',
+      pass: 'firstclass2019'
     }
-  }
-    let transporter = nodemailer.createTransport( mailgun(auth) );
+  });
+   // let transporter = nodemailer.createTransport( mailgun(auth) );
       
     let mailOptions = {
       from: 'Excited user <philip@Codeln_test.com>',
