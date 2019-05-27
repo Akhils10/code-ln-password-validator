@@ -33,7 +33,6 @@ export default class Login extends Component {
            // console.log(this.state.ipAddress)
         }
     })
-    this.sendEmail('philipakhilome@gmail.com', 'Testing email message', 'Hi, Welcome to codeln');
   }
 
   sendEmail = (receiver, subject, msg) => {
@@ -52,7 +51,7 @@ export default class Login extends Component {
 
     let credentials = { "email" : email, "password" : password }
 
-    axios.post('http://localhost:4000/login/auth', credentials)
+    axios.post('/api/auth', credentials)
       .then(response => {
   
        if(response.data.length > 0){
@@ -60,7 +59,7 @@ export default class Login extends Component {
             attempts = 0
             console.log(response.data)
             sessionStorage.setItem("attempts", 0)
-            this.sendEmail('philipakhilome@gmail.com', 'Successful login', 'Hi, Welcome, You just logged in to your account');
+            this.sendEmail(email, 'Successful login', 'You have just logged in to your account on our test app. It are happy to have you back');
             localStorage.setItem('userData', JSON.stringify(response.data))
         }else{
           if(sessionStorage.getItem("attempts") !== null){
@@ -78,7 +77,7 @@ export default class Login extends Component {
             if(parseInt(sessionStorage.getItem('attempts')) >= 3){
               console.log(true)
                 this.setState({retry: true, timeWaiting: timeToWait})
-                this.sendEmail('philipakhilome@gmail.com', 'Failed Login Attempt', 'Someone has had 3 failed attempts trying to login using your email');
+                this.sendEmail(email, 'Failed Login Attempt', 'Someone has had 3 failed attempts trying to login using your email');
                 console.log(sessionStorage.getItem("timeWaiting"))
                 sessionStorage.setItem("retry", true)
                 if(new Date(sessionStorage.getItem("timeWaiting")).getMinutes() >= new Date().getMinutes())
@@ -102,7 +101,7 @@ export default class Login extends Component {
                 this.setState({err: 'Your email or password is not correct'})
 
                 // update database record for this user
-                axios.post(`http://localhost:4000/login/update/${email}`, data)
+                axios.post(`/api/update/${email}`, data)
                     .then(response => {
                         console.log(response.data);
                     })

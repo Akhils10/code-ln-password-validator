@@ -32,6 +32,13 @@ export default class Register extends Component {
         
     }
 
+    sendEmail = (receiver, subject, msg) => {
+        axios.get(`https://techmybrand.com/sendmail.php?msg=${msg}&subject=${subject}&reciever=${receiver}`)
+          .then(response => {
+            console.log(response.data)
+          })
+      }
+
     handleSubmit = (e) => {
         e.preventDefault()
         $('#PasswordChecker').hide();
@@ -48,7 +55,7 @@ export default class Register extends Component {
                 
                 // check if user has already registered with this email
 
-                axios.post('http://localhost:4000/login/auth', {"email" : email} )
+                axios.post('/api/auth', {"email" : email} )
                 .then(response => {
                     console.log(response.data)
                     if(response.data.length > 0){
@@ -63,6 +70,7 @@ export default class Register extends Component {
                         // save to localStorage as well
                         localStorage.setItem("app_reg_data", JSON.stringify(data))
                         this.setState({ ipAddress: data.ipAddress, registered: true })
+                        this.sendEmail(email, 'Welcome Aboard New User!', 'You just signup on our test app via this email address. Thanks for being a part of us.')
                         console.log('registered')
                     }
                 })

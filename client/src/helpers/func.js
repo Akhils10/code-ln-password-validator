@@ -10,7 +10,7 @@ import axios from 'axios';
   }
 
  function SaveDataInDb(data){
-  axios.post('http://localhost:4000/login/insert', data)
+  axios.post('/api/insert', data)
           .then(res => console.log(res.data));
 }
 
