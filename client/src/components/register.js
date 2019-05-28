@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import $ from 'jquery'
-import {Redirect} from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import axios from 'axios';
 
 import Validate from '../helpers/validate'
@@ -59,12 +59,14 @@ export default class Register extends Component {
                 .then(response => {
                     console.log(response.data)
                     if(response.data.length > 0){
+                        console.log('duplicate email')
                         this.setState({
                             email: email,
                             password: password,
                             attempts: this.state.attempts + 1,
                             err: 'Email address is already registered'
                         })
+                        $('#validateErrors').html('<div className="alert alert-danger">Email has already been registered!</div>')
                     }else{
                         SaveDataInDb(data)
                         // save to localStorage as well
@@ -78,6 +80,10 @@ export default class Register extends Component {
                     console.log(error);
                 })
             }
+        }else{
+            $('#validateErrors').html('<div className="alert alert-danger">Please check the errors below</div>')
+            $('#PasswordChecker').show()
+
         }
     }
 
@@ -177,6 +183,7 @@ export default class Register extends Component {
                                     </fieldset>
 
                                 </form>
+                                <Link to="/" style={{color: "#007bff", textDecoration: "none"}}>Already have an ID? Login now</Link>
                             </div>
                         </div>
                     </div>

@@ -72,15 +72,16 @@ export default class Login extends Component {
             attempts = parseInt(attempts) + 1
             sessionStorage.setItem("attempts", attempts)
             attempts = sessionStorage.getItem('attempts')
-            let timeToWait = new Date(Date.now() + 5*60000)
+            let timeToWait = sessionStorage.getItem('timeWaiting') === null ? new Date(Date.now() + 5*60000) : sessionStorage.getItem('timeWaiting')
             sessionStorage.setItem("timeWaiting", timeToWait)
             if(parseInt(sessionStorage.getItem('attempts')) >= 3){
+              timeToWait = new Date(Date.now() + 5*60000)
               console.log(true)
                 this.setState({retry: true, timeWaiting: timeToWait})
                 this.sendEmail(email, 'Failed Login Attempt', 'Someone has had 3 failed attempts trying to login using your email');
                 console.log(sessionStorage.getItem("timeWaiting"))
                 sessionStorage.setItem("retry", true)
-                if(new Date(sessionStorage.getItem("timeWaiting")).getMinutes() >= new Date().getMinutes())
+                if((new Date(sessionStorage.getItem('timeWaiting')).getMinutes() - new Date().getMinutes()) < 0)
                 {
                   console.log(true)
                     timeToWait = null 
@@ -88,6 +89,13 @@ export default class Login extends Component {
                     sessionStorage.setItem("timeWaiting", null)
                     sessionStorage.setItem("retry", false)
                     this.setState({retry: false, err: '', timeWaiting: timeToWait})  
+                }else{
+                  console.log(true)
+                    timeToWait = new Date(sessionStorage.getItem("timeWaiting"))
+                    sessionStorage.setItem("attempts", attempts)
+                    // sessionStorage.setItem("timeWaiting", timeToWait)
+                    sessionStorage.setItem("retry", true)
+                    this.setState({retry: true, err: '', timeWaiting: timeToWait})
                 }
             }else{
                 let data = { 
@@ -114,13 +122,17 @@ export default class Login extends Component {
   }
  
   render() {
+    if((new Date(sessionStorage.getItem('timeWaiting')).getMinutes() - new Date().getMinutes()) < 0){
+      sessionStorage.setItem("retry", false);
+     
+    }
     
     if(this.state.err !== ''){
         $('#ValidateErrors').html(`<div className="alert alert-warning"> ${this.state.err} </div>`)
     }
-    if(sessionStorage.getItem("retry") === "true" || this.state.retry === true){
+    if(sessionStorage.getItem("retry") === "true"){
         const timeLeft = new Date(sessionStorage.getItem('timeWaiting')).getMinutes() - new Date().getMinutes()
-        $('#ValidateErrors').html(`<div className="alert alert-danger"> You must wait  ${timeLeft} minutes more before retrying </div>`)
+        $('#ValidateErrors').html(`<div className="alert alert-danger"> You must wait  ${timeLeft} minute(s) more before retrying </div>`)
     }
     if(this.state.loginSuccess){
         $('#ValidateErrors').html(`<div className="alert alert-success"> Login successful... </div>`)

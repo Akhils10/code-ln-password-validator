@@ -15,7 +15,7 @@
   text-align: center;
 }
 
-#ValidateErrors{
+#validateErrors, #ValidateErrors{
   color: #ff0000;
 }
 #PasswordChecker{
