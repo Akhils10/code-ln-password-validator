@@ -18,7 +18,7 @@ let User = new Schema({
         type: Number
     },
     timeWaiting: {
-        type: Date
+        type: String
     },
     status: {
         type: String
